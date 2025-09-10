@@ -8,13 +8,22 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9"/>
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.9" />
     </ItemGroup>
 
     <ItemGroup>
       <Content Include="..\.dockerignore">
         <Link>.dockerignore</Link>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\NatureAPI.Models\NatureAPI.Models.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="NatureAPI.Models\obj\NatureAPI.Models.csproj.nuget.dgspec.json" />
+      <_ContentIncludedByDefault Remove="NatureAPI.Models\obj\project.assets.json" />
     </ItemGroup>
 
 </Project>
