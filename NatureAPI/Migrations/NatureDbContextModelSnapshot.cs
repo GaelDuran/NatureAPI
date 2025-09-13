@@ -37,6 +37,28 @@ namespace NatureAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Amenities");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Baños"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Estacionamiento"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Mirador"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Área de picnic"
+                        });
                 });
 
             modelBuilder.Entity("NatureAPI.Model.Entities.Photo", b =>
@@ -62,6 +84,22 @@ namespace NatureAPI.Migrations
                     b.HasIndex("PlaceId");
 
                     b.ToTable("Photos");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Description = "Vista panorámica del Parque Nacional El Chico",
+                            PlaceId = 1,
+                            Url = "https://upload.wikimedia.org/wikipedia/commons/6/6e/El_Chico_National_Park.jpg"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Description = "Cascada de Basaseachic en temporada de lluvias",
+                            PlaceId = 2,
+                            Url = "https://upload.wikimedia.org/wikipedia/commons/3/3d/Basaseachic_Falls.jpg"
+                        });
                 });
 
             modelBuilder.Entity("NatureAPI.Model.Entities.Place", b =>
@@ -109,6 +147,36 @@ namespace NatureAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Places");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Accessible = true,
+                            Category = "Parque",
+                            CreatedAt = new DateTime(2024, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Uno de los parques nacionales más antiguos de México, ideal para senderismo y camping.",
+                            ElevationMeters = 2600,
+                            EntryFee = 40.0,
+                            Latitude = 20.216699999999999,
+                            Longitude = -98.7333,
+                            Name = "Parque Nacional El Chico",
+                            OpeningHours = "08:00-18:00"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Accessible = false,
+                            Category = "Cascada",
+                            CreatedAt = new DateTime(2024, 2, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "La segunda cascada más alta de México, ubicada en la Sierra Tarahumara.",
+                            ElevationMeters = 1800,
+                            EntryFee = 30.0,
+                            Latitude = 28.198599999999999,
+                            Longitude = -108.2286,
+                            Name = "Cascada de Basaseachic",
+                            OpeningHours = "09:00-17:00"
+                        });
                 });
 
             modelBuilder.Entity("NatureAPI.Model.Entities.PlaceAmenity", b =>
@@ -124,6 +192,28 @@ namespace NatureAPI.Migrations
                     b.HasIndex("AmenityId");
 
                     b.ToTable("PlaceAmenities");
+
+                    b.HasData(
+                        new
+                        {
+                            PlaceId = 1,
+                            AmenityId = 1
+                        },
+                        new
+                        {
+                            PlaceId = 1,
+                            AmenityId = 2
+                        },
+                        new
+                        {
+                            PlaceId = 1,
+                            AmenityId = 4
+                        },
+                        new
+                        {
+                            PlaceId = 2,
+                            AmenityId = 3
+                        });
                 });
 
             modelBuilder.Entity("NatureAPI.Model.Entities.Review", b =>
@@ -195,6 +285,30 @@ namespace NatureAPI.Migrations
                     b.HasIndex("PlaceId");
 
                     b.ToTable("Trails");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Difficulty = "Media",
+                            DistanceKm = 4.5,
+                            EstimatedTimeMinutes = 120,
+                            IsLoop = true,
+                            Name = "Sendero Las Monjas",
+                            Path = "20.2167,-98.7333;20.2200,-98.7300",
+                            PlaceId = 1
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Difficulty = "Fácil",
+                            DistanceKm = 2.0,
+                            EstimatedTimeMinutes = 60,
+                            IsLoop = false,
+                            Name = "Sendero a la Cascada",
+                            Path = "28.1986,-108.2286;28.2000,-108.2300",
+                            PlaceId = 2
+                        });
                 });
 
             modelBuilder.Entity("NatureAPI.Model.Entities.Photo", b =>
