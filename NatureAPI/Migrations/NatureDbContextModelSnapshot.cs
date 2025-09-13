@@ -91,14 +91,14 @@ namespace NatureAPI.Migrations
                             Id = 1,
                             Description = "Vista panorámica del Parque Nacional El Chico",
                             PlaceId = 1,
-                            Url = "https://upload.wikimedia.org/wikipedia/commons/6/6e/El_Chico_National_Park.jpg"
+                            Url = "https://elsouvenir.com/wp-content/uploads/2018/08/Campamento-cerca-CDMX-Foto-Parque-Nacional-El-Chico-2.jpg"
                         },
                         new
                         {
                             Id = 2,
                             Description = "Cascada de Basaseachic en temporada de lluvias",
                             PlaceId = 2,
-                            Url = "https://upload.wikimedia.org/wikipedia/commons/3/3d/Basaseachic_Falls.jpg"
+                            Url = "https://chihuahua.gob.mx/sites/default/files/grupos/user599/cascada_de_basaseachi_2.jpg"
                         });
                 });
 
