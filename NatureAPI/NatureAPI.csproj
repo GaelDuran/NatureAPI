@@ -14,6 +14,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <PrivateAssets>all</PrivateAssets>
         </PackageReference>
+        <PackageReference Include="Swashbuckle.AspNetCore" Version="9.0.4" />
     </ItemGroup>
 
     <ItemGroup>
@@ -23,13 +24,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\NatureAPI.Models\NatureAPI.Models.csproj" />
       <ProjectReference Include="..\NatureAPI.Model\NatureAPI.Model.csproj" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <_ContentIncludedByDefault Remove="NatureAPI.Models\obj\NatureAPI.Models.csproj.nuget.dgspec.json" />
-      <_ContentIncludedByDefault Remove="NatureAPI.Models\obj\project.assets.json" />
     </ItemGroup>
 
     <ItemGroup>
