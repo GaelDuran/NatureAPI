@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NatureAPI.Data;
 using NatureAPI.Model.Entities;
+using NatureAPI.Model.DTOs;
 
 namespace NatureAPI.Controllers;
 
@@ -33,7 +34,50 @@ public class PlacesController : ControllerBase
             query = query.Where(p => p.Trails.Any(t => t.Difficulty == difficulty));
 
         var places = await query.ToListAsync();
-        return Ok(places);
+        var placeDtos = places.Select(p => new PlaceDto
+        {
+            Id = p.Id,
+            Name = p.Name,
+            Description = p.Description,
+            Category = p.Category,
+            Latitude = p.Latitude,
+            Longitude = p.Longitude,
+            ElevationMeters = p.ElevationMeters,
+            Accessible = p.Accessible,
+            EntryFee = p.EntryFee,
+            OpeningHours = p.OpeningHours,
+            CreatedAt = p.CreatedAt,
+            Trails = p.Trails.Select(t => new TrailDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                DistanceKm = t.DistanceKm,
+                EstimatedTimeMinutes = t.EstimatedTimeMinutes,
+                Difficulty = t.Difficulty,
+                Path = t.Path,
+                IsLoop = t.IsLoop
+            }).ToList(),
+            Photos = p.Photos.Select(ph => new PhotoDto
+            {
+                Id = ph.Id,
+                Url = ph.Url,
+                Description = ph.Description
+            }).ToList(),
+            Reviews = p.Reviews.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                Author = r.Author,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            }).ToList(),
+            Amenities = p.PlaceAmenities.Select(pa => new AmenityDto
+            {
+                Id = pa.Amenity.Id,
+                Name = pa.Amenity.Name
+            }).ToList()
+        }).ToList();
+        return Ok(placeDtos);
     }
 
     // GET /api/places/{id}
@@ -48,7 +92,51 @@ public class PlacesController : ControllerBase
             .FirstOrDefaultAsync(p => p.Id == id);
         if (place == null)
             return NotFound();
-        return Ok(place);
+
+        var placeDto = new PlaceDto
+        {
+            Id = place.Id,
+            Name = place.Name,
+            Description = place.Description,
+            Category = place.Category,
+            Latitude = place.Latitude,
+            Longitude = place.Longitude,
+            ElevationMeters = place.ElevationMeters,
+            Accessible = place.Accessible,
+            EntryFee = place.EntryFee,
+            OpeningHours = place.OpeningHours,
+            CreatedAt = place.CreatedAt,
+            Trails = place.Trails.Select(t => new TrailDto
+            {
+                Id = t.Id,
+                Name = t.Name,
+                DistanceKm = t.DistanceKm,
+                EstimatedTimeMinutes = t.EstimatedTimeMinutes,
+                Difficulty = t.Difficulty,
+                Path = t.Path,
+                IsLoop = t.IsLoop
+            }).ToList(),
+            Photos = place.Photos.Select(ph => new PhotoDto
+            {
+                Id = ph.Id,
+                Url = ph.Url,
+                Description = ph.Description
+            }).ToList(),
+            Reviews = place.Reviews.Select(r => new ReviewDto
+            {
+                Id = r.Id,
+                Author = r.Author,
+                Rating = r.Rating,
+                Comment = r.Comment,
+                CreatedAt = r.CreatedAt
+            }).ToList(),
+            Amenities = place.PlaceAmenities.Select(pa => new AmenityDto
+            {
+                Id = pa.Amenity.Id,
+                Name = pa.Amenity.Name
+            }).ToList()
+        };
+        return Ok(placeDto);
     }
 
     // POST /api/places
@@ -65,4 +153,3 @@ public class PlacesController : ControllerBase
         return CreatedAtAction(nameof(GetPlace), new { id = place.Id }, place);
     }
 }
-
