@@ -40,74 +40,11 @@ public class NatureDbContext : DbContext
         );
 
         // Seed de Place
-        modelBuilder.Entity<Place>().HasData(
-            new Place {
-                Id = 1,
-                Name = "Parque Nacional El Chico",
-                Description = "Uno de los parques nacionales más antiguos de México, ideal para senderismo y camping.",
-                Category = "Parque",
-                Latitude = 20.2167,
-                Longitude = -98.7333,
-                ElevationMeters = 2600,
-                Accessible = true,
-                EntryFee = 40.0,
-                OpeningHours = "08:00-18:00",
-                CreatedAt = new DateTime(2024, 1, 1)
-            },
-            new Place {
-                Id = 2,
-                Name = "Cascada de Basaseachic",
-                Description = "La segunda cascada más alta de México, ubicada en la Sierra Tarahumara.",
-                Category = "Cascada",
-                Latitude = 28.1986,
-                Longitude = -108.2286,
-                ElevationMeters = 1800,
-                Accessible = false,
-                EntryFee = 30.0,
-                OpeningHours = "09:00-17:00",
-                CreatedAt = new DateTime(2024, 2, 1)
-            }
-        );
-
+        modelBuilder.Entity<Place>().HasData(Place.GetSeedPlaces());
         // Seed de Trail
-        modelBuilder.Entity<Trail>().HasData(
-            new Trail {
-                Id = 1,
-                PlaceId = 1,
-                Name = "Sendero Las Monjas",
-                DistanceKm = 4.5,
-                EstimatedTimeMinutes = 120,
-                Difficulty = "Media",
-                Path = "20.2167,-98.7333;20.2200,-98.7300",
-                IsLoop = true
-            },
-            new Trail {
-                Id = 2,
-                PlaceId = 2,
-                Name = "Sendero a la Cascada",
-                DistanceKm = 2.0,
-                EstimatedTimeMinutes = 60,
-                Difficulty = "Fácil",
-                Path = "28.1986,-108.2286;28.2000,-108.2300",
-                IsLoop = false
-            }
-        );
-
+        modelBuilder.Entity<Trail>().HasData(Trail.GetSeedTrails());
         // Seed de Photo
-        modelBuilder.Entity<Photo>().HasData(
-            new Photo {
-                Id = 1,
-                PlaceId = 1,
-                Url = "https://elsouvenir.com/wp-content/uploads/2018/08/Campamento-cerca-CDMX-Foto-Parque-Nacional-El-Chico-2.jpg",
-                Description = "Vista panorámica del Parque Nacional El Chico"
-            },
-            new Photo {
-                Id = 2,
-                PlaceId = 2,
-                Url = "https://chihuahua.gob.mx/sites/default/files/grupos/user599/cascada_de_basaseachi_2.jpg",
-                Description = "Cascada de Basaseachic en temporada de lluvias"
-            }
-        );
+        modelBuilder.Entity<Photo>().HasData(Photo.GetSeedPhotos());
 
         // Seed de PlaceAmenity
         modelBuilder.Entity<PlaceAmenity>().HasData(

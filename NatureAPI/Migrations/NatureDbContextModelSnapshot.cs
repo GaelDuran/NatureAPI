@@ -17,7 +17,7 @@ namespace NatureAPI.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "9.0.9")
+                .HasAnnotation("ProductVersion", "9.0.8")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -89,7 +89,7 @@ namespace NatureAPI.Migrations
                         new
                         {
                             Id = 1,
-                            Description = "Vista panorámica del Parque Nacional El Chico",
+                            Description = "Parque Nacional El Chico en Hidalgo",
                             PlaceId = 1,
                             Url = "https://elsouvenir.com/wp-content/uploads/2018/08/Campamento-cerca-CDMX-Foto-Parque-Nacional-El-Chico-2.jpg"
                         },
@@ -99,6 +99,27 @@ namespace NatureAPI.Migrations
                             Description = "Cascada de Basaseachic en temporada de lluvias",
                             PlaceId = 2,
                             Url = "https://chihuahua.gob.mx/sites/default/files/grupos/user599/cascada_de_basaseachi_2.jpg"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Description = "Mirador Peña del Cuervo en la Sierra de Órganos",
+                            PlaceId = 3,
+                            Url = "https://programadestinosmexico.com/wp-content/uploads/2023/10/Mirador-Pena-del-Cuervo.jpg"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Description = "Sendero del Tepozteco, Morelos",
+                            PlaceId = 4,
+                            Url = "https://programadestinosmexico.com/wp-content/uploads/2023/10/Mirador-Pena-del-Cuervo.jpg"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Description = "Parque Nacional Cumbres de Monterrey",
+                            PlaceId = 5,
+                            Url = "https://www.gob.mx/cms/uploads/article/main_image/28051/blog_PNCM.jpg"
                         });
                 });
 
@@ -176,6 +197,48 @@ namespace NatureAPI.Migrations
                             Longitude = -108.2286,
                             Name = "Cascada de Basaseachic",
                             OpeningHours = "09:00-17:00"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Accessible = true,
+                            Category = "Mirador",
+                            CreatedAt = new DateTime(2024, 3, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Mirador panorámico en la Sierra de Órganos, ideal para fotografía y observación de paisajes.",
+                            ElevationMeters = 2400,
+                            EntryFee = 25.0,
+                            Latitude = 23.0167,
+                            Longitude = -103.5167,
+                            Name = "Mirador Peña del Cuervo",
+                            OpeningHours = "07:00-19:00"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Accessible = false,
+                            Category = "Sendero",
+                            CreatedAt = new DateTime(2024, 4, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Ruta de senderismo que lleva a la cima del cerro Tepozteco, con vistas espectaculares.",
+                            ElevationMeters = 2200,
+                            EntryFee = 50.0,
+                            Latitude = 18.973099999999999,
+                            Longitude = -99.094200000000001,
+                            Name = "Sendero del Tepozteco",
+                            OpeningHours = "06:00-18:00"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Accessible = true,
+                            Category = "Parque",
+                            CreatedAt = new DateTime(2024, 5, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            Description = "Área natural protegida con montañas, cañones y cascadas, ideal para actividades al aire libre.",
+                            ElevationMeters = 2100,
+                            EntryFee = 35.0,
+                            Latitude = 25.683299999999999,
+                            Longitude = -100.3167,
+                            Name = "Parque Nacional Cumbres de Monterrey",
+                            OpeningHours = "08:00-20:00"
                         });
                 });
 
@@ -308,6 +371,39 @@ namespace NatureAPI.Migrations
                             Name = "Sendero a la Cascada",
                             Path = "28.1986,-108.2286;28.2000,-108.2300",
                             PlaceId = 2
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Difficulty = "Fácil",
+                            DistanceKm = 1.2,
+                            EstimatedTimeMinutes = 40,
+                            IsLoop = true,
+                            Name = "Ruta Peña del Cuervo",
+                            Path = "23.0167,-103.5167;23.0180,-103.5200",
+                            PlaceId = 3
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Difficulty = "Difícil",
+                            DistanceKm = 2.5,
+                            EstimatedTimeMinutes = 90,
+                            IsLoop = false,
+                            Name = "Ascenso al Tepozteco",
+                            Path = "18.9731,-99.0942;18.9750,-99.0950",
+                            PlaceId = 4
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Difficulty = "Media",
+                            DistanceKm = 5.0,
+                            EstimatedTimeMinutes = 180,
+                            IsLoop = true,
+                            Name = "Cañón de la Huasteca",
+                            Path = "25.6833,-100.3167;25.6900,-100.3200",
+                            PlaceId = 5
                         });
                 });
 
