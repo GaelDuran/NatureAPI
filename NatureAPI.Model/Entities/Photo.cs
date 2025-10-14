@@ -14,7 +14,7 @@ public class Photo
         {
             Id = 1,
             PlaceId = 1,
-            Url = "https://elsouvenir.com/wp-content/uploads/2018/08/Campamento-cerca-CDMX-Foto-Parque-Nacional-El-Chico-2.jpg",
+            Url = "https://www.gob.mx/cms/uploads/image/file/418763/20-4.jpg",
             Description = "Parque Nacional El Chico en Hidalgo"
         },
         new Photo
@@ -35,8 +35,8 @@ public class Photo
         {
             Id = 4,
             PlaceId = 4,
-            Url = "https://programadestinosmexico.com/wp-content/uploads/2023/10/Mirador-Pena-del-Cuervo.jpg",
-            Description = "Sendero del Tepozteco, Morelos"
+            Url = "",
+            Description = "https://elgiroscopo.es/wp-content/uploads/2018/11/entrada_yacimiento_tepozteco.jpg"
         },
         new Photo
         {
