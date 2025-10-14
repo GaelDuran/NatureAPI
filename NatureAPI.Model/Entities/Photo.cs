@@ -35,8 +35,8 @@ public class Photo
         {
             Id = 4,
             PlaceId = 4,
-            Url = "",
-            Description = "https://elgiroscopo.es/wp-content/uploads/2018/11/entrada_yacimiento_tepozteco.jpg"
+            Url = "https://elgiroscopo.es/wp-content/uploads/2018/11/entrada_yacimiento_tepozteco.jpg",
+            Description = "Entrada y sendero al Tepozteco"
         },
         new Photo
         {
