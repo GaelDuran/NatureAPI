@@ -29,11 +29,9 @@ builder.Services.AddSwaggerGen();
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+// Enable swagger in all environments to ease testing (you can restrict to Development in production)
+app.UseSwagger();
+app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "NatureAPI v1"));
 
 // **Middleware de CORS debe ir antes de UseAuthorization y MapControllers**
 app.UseCors("AllowAngular");

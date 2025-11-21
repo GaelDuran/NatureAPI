@@ -1,0 +1,79 @@
+﻿name: CI - Build, Migrate and Push Docker image
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    services:
+      sqlserver:
+        image: mcr.microsoft.com/mssql/server:2022-latest
+        env:
+          ACCEPT_EULA: "Y"
+          MSSQL_SA_PASSWORD: ${{ secrets.SQL_SA_PASSWORD }}
+          MSSQL_PID: Developer
+        ports:
+          - 1433:1433
+        options: >-
+          --health-cmd "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${{ secrets.SQL_SA_PASSWORD }} -Q 'SELECT 1'"
+          --health-interval=10s --health-timeout=5s --health-retries=30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build
+        run: dotnet build --configuration Release --no-restore
+
+      - name: Install dotnet-ef tool
+        run: |
+          dotnet tool install --global dotnet-ef --version 9.* || true
+          echo "##[add-path]$HOME/.dotnet/tools"
+        env:
+          DOTNET_CLI_TELEMETRY_OPTOUT: 1
+
+      - name: Wait for SQL Server to be ready
+        env:
+          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=NatureDb;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+        run: |
+          export PATH="$HOME/.dotnet/tools:$PATH"
+          for i in {1..30}; do
+            echo "Checking SQL Server (attempt $i)..."
+            dotnet ef dbcontext info --project ./NatureAPI --startup-project ./NatureAPI --no-build && break || sleep 5
+          done
+
+      - name: Apply EF Core migrations
+        env:
+          ConnectionStrings__DefaultConnection: "Server=localhost,1433;Database=NatureDb;User Id=sa;Password=${{ secrets.SQL_SA_PASSWORD }};TrustServerCertificate=True;"
+        run: |
+          export PATH="$HOME/.dotnet/tools:$PATH"
+          dotnet ef database update --project ./NatureAPI --startup-project ./NatureAPI --no-build
+
+      - name: Build and push Docker image to GHCR
+        uses: docker/build-push-action@v5
+        with:
+          context: ./NatureAPI
+          file: ./NatureAPI/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/natureapi:latest
+            ghcr.io/${{ github.repository_owner }}/natureapi:${{ github.sha }}
+        secrets:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
