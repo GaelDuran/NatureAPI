@@ -1,5 +1,5 @@
-﻿# dockerfile
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+﻿# dockerfile actualizado para .NET 9
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /App
 
 # Copia todo
@@ -10,7 +10,7 @@ RUN dotnet restore ./NatureAPI/NatureAPI.csproj
 RUN dotnet publish ./NatureAPI/NatureAPI.csproj -c Release -o /App/build
 
 # Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 ENV ASPNETCORE_URLS=http://+:80
 EXPOSE 80
 
