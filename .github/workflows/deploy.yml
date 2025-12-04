@@ -1,4 +1,4 @@
-﻿name: Docker Build & Publish API
+﻿name: Build & Publish API
 
 on:
   push:
@@ -10,19 +10,33 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Clone repository
+      - name: Checkout repository
         uses: actions/checkout@v4
 
       - name: Login to Docker Hub
-        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Build Docker Image
+      - name: Build Docker image
         run: docker build -f NatureAPI/Dockerfile -t mariguapo/nature-api:${{ github.sha }} .
 
-      - name: Tag Latest
+      - name: Tag as latest
         run: docker tag mariguapo/nature-api:${{ github.sha }} mariguapo/nature-api:latest
 
-      - name: Push Docker Image
+      - name: Push images
         run: |
           docker push mariguapo/nature-api:${{ github.sha }}
           docker push mariguapo/nature-api:latest
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Trigger Render Deploy
+        uses: JorgeLNJunior/render-deploy@v1
+        with:
+          service-id: ${{ secrets.RENDER_SERVICE_ID }}
+          api-key: ${{ secrets.RENDER_API_KEY }}
