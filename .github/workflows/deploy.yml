@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Trigger Render Deploy
-        uses: JorgeLNJunior/render-deploy@v1
+        uses: jrglnjr/render-deploy@v1
         with:
-          service-id: ${{ secrets.RENDER_SERVICE_ID }}
-          api-key: ${{ secrets.RENDER_API_KEY }}
+          serviceId: ${{ secrets.RENDER_SERVICE_ID }}
+          apiKey: ${{ secrets.RENDER_API_KEY }}
