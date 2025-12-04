@@ -1,4 +1,5 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+﻿# build stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
 WORKDIR /src
 
 # Copiar todo y restaurar
@@ -8,6 +9,7 @@ RUN dotnet restore
 # Publicar el proyecto NatureAPI
 RUN dotnet publish ./NatureAPI/NatureAPI.csproj -c Release -o /app/publish
 
+# runtime stage
 FROM mcr.microsoft.com/dotnet/aspnet:9.0
 
 # Dependencias opcionales para procesamiento de imágenes / wkhtmltopdf
@@ -16,11 +18,11 @@ RUN apt-get update -qq && apt-get -y install libgdiplus libc6-dev wget fontconfi
 WORKDIR /app
 COPY --from=build-env /app/publish .
 
-# Bind a puerto 80 (útil en Render)
-ENV ASPNETCORE_URLS=http://+:80
+# Exponer puerto 80 como documentación; Render suministra el puerto real via $PORT
 EXPOSE 80
 
 # Si existe wkhtmltopdf en Rotativa, ajustar permisos
 RUN if [ -f /app/Rotativa/Linux/wkhtmltopdf ]; then chmod 755 /app/Rotativa/Linux/wkhtmltopdf; fi
 
-ENTRYPOINT ["dotnet", "NatureAPI.dll"]
+# Ejecutar usando la variable PORT de Render para ASPNETCORE_URLS
+ENTRYPOINT ["sh", "-c", "ASPNETCORE_URLS=http://0.0.0.0:${PORT:-80} dotnet NatureAPI.dll"]
