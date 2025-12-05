@@ -1,4 +1,5 @@
-﻿services:
+﻿# render.yaml → RAÍZ del repositorio
+services:
   - type: web
     name: natureapp-api
     env: docker
@@ -8,17 +9,12 @@
     dockerfilePath: ./Dockerfile
     healthCheckPath: /health
     envVars:
-      - key: ConnectionStrings__DefaultConnection
-        fromDatabase:
-          name: nature-db
-          property: connectionString
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
       - key: OpenAI__ApiKey
-        sync: false
+        sync: false   # la pones a mano en Render después
 
 databases:
   - name: nature-db
-    databaseName: NatureDb
-    user: nature_user
     plan: free
     postgresMajorVersion: 16
-

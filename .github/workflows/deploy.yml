@@ -1,19 +1,35 @@
-﻿name: Build & Deploy to Render
+﻿# .github/workflows/deploy.yml  →  Este SÍ puedes copiar-pegar del proyecto anterior
+name: Docker Build & Publish + Deploy to Render
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  deploy:
+  build-and-push:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Clone repository
+        uses: actions/checkout@v4
 
+      - name: Login to Docker Hub
+        run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
+
+      - name: Build Docker Image
+        run: docker build -t mariguapo/nature-api:${{ github.sha }} .
+
+      - name: Tag Latest
+        run: docker tag mariguapo/nature-api:${{ github.sha }} mariguapo/nature-api:latest
+
+      - name: Push Docker Image
+        run: |
+          docker push mariguapo/nature-api:${{ github.sha }}
+          docker push mariguapo/nature-api:latest
+
+      # ← NUEVO: este paso es el que hace el deploy automático en Render
       - name: Trigger Render Deploy
         run: |
-          curl -X POST "https://api.render.com/v1/services/srv-xxxxxxxxx/deploys" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}" \
-            -H "Content-Type: application/json" \
-            -d '{"clearCache":true}'
-
+          curl -X POST "https://api.render.com/v1/services/srv-XXXXXXXXXXXXXXXXXXXXXXXX/deploys" \
+            -H "Accept: application/json" \
+            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"
