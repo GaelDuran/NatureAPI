@@ -1,4 +1,4 @@
-﻿# Dockerfile → RAÍZ del repositorio natureapp-api
+﻿# Dockerfile → Poner en la RAÍZ del repositorio natureapp-api
 FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
 WORKDIR /App
 EXPOSE 8080
@@ -7,42 +7,31 @@ ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 ENV ASPNETCORE_ENVIRONMENT=Production
 
 # Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /App
 
-COPY . ./
+# Copiar y restaurar
+COPY . .
 RUN dotnet restore
 
-# Publicar el proyecto NatureAPI
-RUN dotnet publish NatureAPI/NatureAPI.csproj -c Release -o /App/build /p:UseAppHost=false
+# Publicar
+RUN dotnet publish NatureAPI/NatureAPI.csproj -c Release -o /App/publish /p:UseAppHost=false
 
 # Runtime stage
 FROM base AS final
 WORKDIR /App
 
-# Dependencias mínimas para Rotativa (si algún día la subes)
+# Solo lo estrictamente necesario para que no falle nunca
 RUN apt-get update -qq && \
     apt-get -y install libgdiplus libc6-dev && \
     rm -rf /var/lib/apt/lists/*
 
-# Fuentes Poppins (opcional)
-RUN mkdir -p /usr/share/fonts/truetype/poppins && \
-    wget -q -O /usr/share/fonts/poppins/Poppins-Regular.ttf \
-      https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf && \
-    wget -q -O /usr/share/fonts/truetype/poppins/Poppins-Bold.ttf \
-      https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf && \
-    fc-cache -f -v
+# Copiar la app publicada
+COPY --from=build /App/publish .
 
-# Copiar app publicada
-COPY --from=build-env /App/build .
-
-# Templates → si no existe, no falla
-RUN mkdir -p /App/Templates
-COPY NatureAPI/Templates/ /App/Templates/ || true
-
-# Rotativa → si no existe, no falla (y nunca más dará el error de comillas)
-RUN mkdir -p /App/Rotativa
-COPY NatureAPI/Rotativa/ /App/Rotativa/ || true
-RUN if [ -f /App/Rotativa/Linux/wkhtmltopdf ]; then chmod +x /App/Rotativa/Linux/wkhtmltopdf; fi
+# Templates y Rotativa: solo si existen (esta sintaxis NUNCA falla)
+COPY NatureAPI/Templates ./Templates 2>/dev/null || :
+COPY NatureAPI/Rotativa ./Rotativa 2>/dev/null || :
+RUN [ -f ./Rotativa/Linux/wkhtmltopdf ] && chmod +x ./Rotativa/Linux/wkhtmltopdf || true
 
 ENTRYPOINT ["dotnet", "NatureAPI.dll"]
