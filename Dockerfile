@@ -1,5 +1,5 @@
 ﻿# Dockerfile → RAÍZ del repositorio natureapp-api
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
 WORKDIR /app
 EXPOSE 8080
 
@@ -8,15 +8,15 @@ ENV ASPNETCORE_ENVIRONMENT=Production
 
 FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /src
-
 COPY . .
+
+# Restaurar todos los proyectos que encuentre
 RUN dotnet restore
 
-# Esta línea es la clave: busca automáticamente el único .csproj que haya
-RUN dotnet publish -c Release -o /app/publish --no-restore
+# Publicar TODOS los proyectos y copiar solo la salida del que tenga <OutputType>Exe</OutputType>
+RUN dotnet publish --no-restore -c Release -o /app/publish
 
-FROM base AS final
+FROM runtime AS final
 WORKDIR /app
 COPY --from=build /app/publish .
-
 ENTRYPOINT ["dotnet", "NatureAPI.dll"]
