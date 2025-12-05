@@ -1,0 +1,24 @@
+﻿services:
+  - type: web
+    name: natureapp-api
+    env: docker
+    region: oregon
+    plan: free
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        fromDatabase:
+          name: nature-db
+          property: connectionString
+      - key: OpenAI__ApiKey
+        sync: false
+
+databases:
+  - name: nature-db
+    databaseName: NatureDb
+    user: nature_user
+    plan: free
+    postgresMajorVersion: 16
+
