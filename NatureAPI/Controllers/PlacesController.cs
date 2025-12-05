@@ -1,8 +1,13 @@
+// csharp
+using System;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NatureAPI.Data;
 using NatureAPI.Model.Entities;
 using NatureAPI.Model.DTOs;
+using NatureAPI.Services;
 
 namespace NatureAPI.Controllers;
 
@@ -151,5 +156,17 @@ public class PlacesController : ControllerBase
         _context.Places.Add(place);
         await _context.SaveChangesAsync();
         return CreatedAtAction(nameof(GetPlace), new { id = place.Id }, place);
+    }
+
+    // GET /api/places/{id}/summary
+    [HttpGet("{id}/summary")]
+    public async Task<IActionResult> GetPlaceSummary(int id, [FromServices] OpenAIService ai)
+    {
+        var place = await _context.Places.FirstOrDefaultAsync(p => p.Id == id);
+        if (place == null)
+            return NotFound();
+
+        var summary = await ai.SummarizePlace(place.Name, place.Description ?? string.Empty);
+        return Ok(new { summary });
     }
 }
