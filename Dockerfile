@@ -5,6 +5,9 @@ WORKDIR /src
 # Copiar todo el repositorio
 COPY . ./
 
+# Asegurar que los directorios existen para evitar fallos en la etapa final
+RUN mkdir -p /src/NatureAPI/Rotativa /src/NatureAPI/Templates
+
 # Restaurar y publicar solo el proyecto NatureAPI
 RUN dotnet restore "NatureAPI/NatureAPI.csproj"
 RUN dotnet publish "NatureAPI/NatureAPI.csproj" -c Release -o /app/publish
@@ -29,7 +32,6 @@ WORKDIR /app
 COPY --from=build-env /app/publish .
 
 # Copiar plantillas si existen en `NatureAPI/Templates`
-# (no falla si el directorio no existe en build-env)
 COPY --from=build-env /src/NatureAPI/Templates /app/Templates
 
 # Copiar Rotativa si se usa y ajustar permisos (si existe)
