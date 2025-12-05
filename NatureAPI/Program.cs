@@ -32,11 +32,20 @@ builder.Services.AddCors(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// DbContext (asegúrate de tener ConnectionStrings:DefaultConnection en appsettings.json)
-// Cambiado a Npgsql + NetTopologySuite para compatibilidad con PostgreSQL/PostGIS en Render
-builder.Services.AddDbContext<NatureDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection"),
-        x => x.UseNetTopologySuite()));
+// DbContext
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+
+if (!string.IsNullOrEmpty(connectionString))
+{
+    builder.Services.AddDbContext<NatureDbContext>(options =>
+        options.UseNpgsql(connectionString, x => x.UseNetTopologySuite()));
+}
+else
+{
+    // Base de datos en memoria para que no reviente la app
+    builder.Services.AddDbContext<NatureDbContext>(options =>
+        options.UseInMemoryDatabase("NatureDb"));
+}
 
 // Servicios
 builder.Services.AddScoped<OpenAIService>();
