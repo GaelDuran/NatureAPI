@@ -4,10 +4,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using NatureAPI.Data;
 using NatureAPI.Model.Entities;
 using NatureAPI.Model.DTOs;
 using NatureAPI.Services;
+using NatureAPI.Data;
 
 namespace NatureAPI.Controllers;
 

@@ -16,7 +16,9 @@
       "launchBrowser": false,
       "applicationUrl": "https://localhost:7166;http://localhost:5268",
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development"
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "OpenAIKey": "",
+        "ConnectionStrings__SqlServer": "Server=3.134.112.36;Database=NatureDb;User Id=sa;Password=Abc12345!;Encrypt=True;TrustServerCertificate=True;MultipleActiveResultSets=True"
       }
     }
   }

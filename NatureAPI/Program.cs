@@ -3,6 +3,7 @@ using NatureAPI.Data;
 using NatureAPI.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+var connectionString = builder.Configuration.GetConnectionString("SqlServer");
 
 // Controllers + JSON options
 builder.Services.AddControllers()
@@ -13,14 +14,13 @@ builder.Services.AddControllers()
     });
 
 // CORS
-var frontendOrigin = builder.Configuration["FrontendOrigin"] ?? "http://localhost:4200";
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy("AllowFrontend", policy =>
+    options.AddPolicy("AllowAll", policy =>
     {
-        policy.WithOrigins(frontendOrigin)
-            .AllowAnyHeader()
-            .AllowAnyMethod();
+        policy.AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
     });
 });
 
@@ -30,7 +30,7 @@ builder.Services.AddSwaggerGen();
 
 // DbContext (asegúrate de tener ConnectionStrings:DefaultConnection en appsettings.json)
 builder.Services.AddDbContext<NatureDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(builder.Configuration.GetConnectionString("SqlServer")));
 
 // Registrar servicios
 builder.Services.AddScoped<OpenAIService>();
@@ -43,8 +43,10 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseSwagger();
+app.UseSwaggerUI();
 app.UseHttpsRedirection();
-app.UseCors("AllowFrontend");
+app.UseCors("AllowAll");
 app.UseAuthorization();
 app.MapControllers();
 

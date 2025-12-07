@@ -5,19 +5,19 @@ namespace NatureAPI.Services
 {
     public class OpenAIService
     {
-        private readonly string _apiKey;
+        private readonly IConfiguration _config;
 
         public OpenAIService(IConfiguration config)
         {
-            _apiKey = config["OpenAI:ApiKey"] 
-                      ?? throw new ArgumentNullException("OpenAI:ApiKey");
+            _config = config;
         }
 
         public async Task<string> SummarizePlace(string name, string description)
         {
+            var openAIKey = _config["OpenAIKey"];
             var client = new ChatClient(
                 model: "gpt-5-mini",
-                apiKey: _apiKey
+                apiKey: openAIKey
             );
 
             var prompt = 
