@@ -1,28 +1,23 @@
-﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
-WORKDIR /src
-
-# Copiar todo el repo
-COPY . .
-
-# Restaurar
-RUN dotnet restore NatureAPI/NatureAPI.csproj
-
-# Publicar
-RUN dotnet publish NatureAPI/NatureAPI.csproj -c Release -o /app/publish
-
-# Runtime
-FROM mcr.microsoft.com/dotnet/aspnet:9.0
+﻿FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS base
+USER $APP_UID
 WORKDIR /app
+EXPOSE 8080
+EXPOSE 8081
 
-# Fuentes y dependencias visuales
-RUN apt-get update -qq && apt-get -y install libgdiplus libc6-dev wget fontconfig
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+COPY ["NatureAPI/NatureAPI.csproj", "NatureAPI/"]
+RUN dotnet restore "NatureAPI/NatureAPI.csproj"
+COPY . .
+WORKDIR "/src/NatureAPI"
+RUN dotnet build "./NatureAPI.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
-RUN mkdir -p /usr/share/fonts/truetype/poppins && \
-    wget -O /usr/share/fonts/truetype/poppins/Poppins-Regular.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf && \
-    wget -O /usr/share/fonts/truetype/poppins/Poppins-Bold.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf && \
-    fc-cache -f -v
+FROM build AS publish
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./NatureAPI.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
-# Copiar app publicado
-COPY --from=build-env /app/publish .
-
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
 ENTRYPOINT ["dotnet", "NatureAPI.dll"]
