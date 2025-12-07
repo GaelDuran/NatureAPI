@@ -16,7 +16,7 @@ jobs:
         run: docker login -u "${{ secrets.DOCKER_USERNAME }}" -p "${{ secrets.DOCKER_PASSWORD }}"
 
       - name: Build Docker Image
-        run: docker build -t mariguapo/nature-api:${{ github.sha }} .
+        run: docker build --no-cache -t mariguapo/nature-api:${{ github.sha }} .
 
       - name: Tag Latest
         run: docker tag mariguapo/nature-api:${{ github.sha }} mariguapo/nature-api:latest
