@@ -1,5 +1,4 @@
-﻿# .github/workflows/deploy.yml  →  Este SÍ puedes copiar-pegar del proyecto anterior
-name: Docker Build & Publish + Deploy to Render
+﻿name: Docker Build & Publish
 
 on:
   push:
@@ -26,10 +25,3 @@ jobs:
         run: |
           docker push mariguapo/nature-api:${{ github.sha }}
           docker push mariguapo/nature-api:latest
-
-      # ← NUEVO: este paso es el que hace el deploy automático en Render
-      - name: Trigger Render Deploy
-        run: |
-          curl -X POST "https://api.render.com/v1/services/srv-XXXXXXXXXXXXXXXXXXXXXXXX/deploys" \
-            -H "Accept: application/json" \
-            -H "Authorization: Bearer ${{ secrets.RENDER_API_KEY }}"

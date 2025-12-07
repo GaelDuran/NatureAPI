@@ -1,34 +1,27 @@
-﻿# Dockerfile → 100 % funcional con tu repo tal cual está ahora
-FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
-WORKDIR /app
-EXPOSE 8080
-ENV ASPNETCORE_URLS=http://0.0.0.0:8080
-ENV ASPNETCORE_ENVIRONMENT=Production
+﻿FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+WORKDIR /App
+# Copy everything
+COPY . ./
 
-# Build stage
-FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
-WORKDIR /src
+RUN ls
+# Restore as distinct layers
+RUN dotnet restore
+# Build and publish a release
+RUN ls /App/NatureAPI
+RUN dotnet publish /App/NatureAPI/NatureAPI.csproj -c Release -o /App/build
 
-# Copiamos todo
-COPY . .
 
-# Restauramos FORZANDO que use NuGet.org + cache oficial (esto arregla el 99% de fallos)
-RUN dotnet nuget locals all --clear
-RUN dotnet restore NatureAPI.sln --verbosity normal
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+RUN apt-get update -qq && apt-get -y install libgdiplus libc6-dev 
+RUN apt-get update && apt-get install -y wget fontconfig
 
-# Publicamos el proyecto principal (si falla, lo ignoramos y copiamos lo que haya)
-RUN dotnet publish NatureAPI/NatureAPI.csproj -c Release -o /app/out --no-restore || echo "Publish falló pero seguimos"
 
-# Si no-restore + -o /app/out para que siempre cree la carpeta
-RUN mkdir -p /app/out
-RUN cp -r NatureAPI/bin/Release/net9.0/* /app/out/ 2>/dev/null || true
-
-# Runtime final
-FROM runtime AS final
-WORKDIR /app
-COPY --from=build /app/out .
-
-# Si no hay DLL, falla con mensaje claro
-RUN ls -la /app
+RUN mkdir -p /usr/share/fonts/truetype/poppins && \
+    wget -O /usr/share/fonts/truetype/poppins/Poppins-Regular.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Regular.ttf && \
+    wget -O /usr/share/fonts/truetype/poppins/Poppins-Bold.ttf https://github.com/google/fonts/raw/main/ofl/poppins/Poppins-Bold.ttf && \
+    fc-cache -f -v
+WORKDIR /App
+COPY --from=build-env /App/build .
 
 ENTRYPOINT ["dotnet", "NatureAPI.dll"]
